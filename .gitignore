@@ -1,3 +1,2 @@
-app/config/db.php
 .env.env
 *.sql
