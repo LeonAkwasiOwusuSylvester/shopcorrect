@@ -1,0 +1,29 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # 1. SECURITY: Protect core system folders, but ALLOW 'routes' so forms & translations work
+    RewriteRule ^(app|storage|vendor|views|helpers|\.env|composer\.json|composer\.lock) - [F,L,NC]
+
+    # 2. CUSTOM ROUTE: Direct domain.com/store/shop-name to public/store.php
+    RewriteRule ^store/([a-zA-Z0-9-]+)/?$ public/store.php?slug=$1 [L,QSA]
+
+    # 3. HOMEPAGE: Route the main domain directly to public/index.php
+    RewriteRule ^$ public/index.php [L]
+
+    # 4. ASSETS: Route static files (css, images, js) seamlessly
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/public%{REQUEST_URI} -d
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # 5. CLEAN URLs: Route domain.com/login to public/login.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{DOCUMENT_ROOT}/public/$1.php -f
+    RewriteRule ^([^/]+)/?$ public/$1.php [L,QSA]
+
+    # 6. FALLBACK: Route any other direct requests into public
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*\.php)$ public/$1 [L,QSA]
+</IfModule>

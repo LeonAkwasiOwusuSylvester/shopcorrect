@@ -1,0 +1,461 @@
+/* ==============================
+   ShopCorrect Official Theme (2026 Professional Edition)
+   ============================== */
+
+:root {
+    /* Brand Colors (Navy Theme) */
+    --brand-primary: #0B2447;
+    --brand-hover: #19376D;
+    --brand-accent: #dc3545;
+    --brand-gold: #ffc107;
+
+    /* Backgrounds */
+    --bg-light: #ffffff;
+    --bg-soft: #F5F7FA;
+
+    /* Functional Colors */
+    --success-green: #10B981;
+    --danger-red: #EF4444;
+
+    /* Typography */
+    --text-dark: #1F2937;
+    --text-muted: #6B7280;
+    --border-soft: #E5E7EB;
+
+    /* Dimensions */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+/* ==============================
+   Global Reset & Base
+   ============================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ✅ Prevent footer from floating up on short pages */
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ✅ Main content stretches to fill remaining space */
+main,
+.main-wrapper,
+#main-content {
+    flex: 1 0 auto;
+}
+
+/* ✅ Footer always stays at the bottom */
+footer {
+    flex-shrink: 0;
+    margin-top: 0 !important;
+    /* remove mt-auto interference */
+}
+
+img,
+video,
+iframe,
+embed,
+object {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ✅ Prevent horizontal scroll on all screens */
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+body {
+    background-color: var(--bg-soft);
+    color: var(--text-dark);
+    font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    /* ✅ Fluid base font — scales between 14px and 16px */
+    font-size: clamp(14px, 1.5vw, 16px);
+}
+
+/* ==============================
+   Navbar & Navigation
+   ============================== */
+.navbar {
+    background-color: var(--brand-primary);
+    box-shadow: 0 4px 12px rgba(11, 36, 71, 0.08);
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+
+.navbar-brand {
+    color: #ffffff !important;
+    font-weight: 800;
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    /* ✅ fluid brand size */
+    letter-spacing: -0.5px;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+.bg-brand-nav {
+    background-color: var(--brand-primary) !important;
+}
+
+.bg-admin-nav {
+    background-color: var(--brand-accent) !important;
+}
+
+.nav-icon-btn {
+    position: relative;
+    padding: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.2s;
+}
+
+.nav-icon-btn:hover {
+    color: #ffffff;
+}
+
+/* ==============================
+   Typography — Fluid Headings
+   ============================== */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--brand-primary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* ✅ Each heading scales fluidly across all devices */
+h1 {
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+}
+
+h2 {
+    font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+h3 {
+    font-size: clamp(1.15rem, 2.5vw, 1.75rem);
+}
+
+h4 {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+}
+
+h5 {
+    font-size: clamp(0.95rem, 1.8vw, 1.25rem);
+}
+
+h6 {
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+}
+
+.text-brand {
+    color: var(--brand-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* ==============================
+   Cards & Tiles
+   ============================== */
+.card {
+    background-color: var(--bg-light);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+    border-color: transparent;
+}
+
+.action-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: #fff;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    color: var(--brand-primary);
+    text-decoration: none;
+    transition: all 0.2s;
+    height: 100%;
+}
+
+.action-tile:hover {
+    background-color: #fff;
+    border-color: var(--brand-primary);
+    color: var(--brand-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+}
+
+.action-tile i {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+/* ==============================
+   Buttons & Forms
+   ============================== */
+.btn {
+    border-radius: var(--radius-sm);
+    padding: 10px 22px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    /* ✅ Touch-friendly minimum height */
+    min-height: 44px;
+}
+
+.btn-brand,
+.btn-primary {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: white;
+}
+
+.btn-brand:hover,
+.btn-primary:hover {
+    background-color: var(--brand-hover);
+    border-color: var(--brand-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(11, 36, 71, 0.2);
+}
+
+/* ✅ Full-width buttons on mobile for easy tapping */
+@media (max-width: 576px) {
+    .btn-block-mobile {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+}
+
+.form-control {
+    padding: 12px 15px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-soft);
+    font-size: 0.95rem;
+    /* ✅ Prevents iOS auto-zoom on focus (must be 16px+) */
+    font-size: max(16px, 0.95rem);
+    width: 100%;
+}
+
+.form-control:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 4px rgba(11, 36, 71, 0.1);
+    outline: none;
+}
+
+/* ==============================
+   ✅ Responsive Tables
+   All tables scroll horizontally on small screens
+   ============================== */
+.table-responsive-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-sm);
+}
+
+table {
+    min-width: 500px;
+    /* prevents squishing */
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* ==============================
+   ✅ Responsive Product Grid
+   Auto-fits columns based on available space
+   ============================== */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 576px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+@media (min-width: 992px) {
+    .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+}
+
+/* ==============================
+   ✅ Responsive Layout Helpers
+   ============================== */
+
+/* Sidebar + Content layout */
+.layout-with-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.layout-sidebar {
+    flex: 1 1 240px;
+    min-width: 0;
+}
+
+.layout-content {
+    flex: 3 1 300px;
+    min-width: 0;
+}
+
+/* Dashboard stat cards grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* ==============================
+   ✅ Spacing Adjustments for Small Screens
+   ============================== */
+@media (max-width: 768px) {
+    .card {
+        border-radius: var(--radius-sm);
+    }
+
+    .action-tile {
+        padding: 1rem;
+    }
+
+    .action-tile i {
+        font-size: 1.4rem;
+    }
+
+    /* Tighten page padding on mobile */
+    .container,
+    .container-fluid {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    /* Stack any side-by-side flex layouts */
+    .flex-stack-mobile {
+        flex-direction: column !important;
+    }
+
+    /* Full width inputs & selects */
+    input,
+    select,
+    textarea {
+        width: 100%;
+    }
+}
+
+/* ==============================
+   Footer
+   ============================== */
+footer {
+    background-color: var(--brand-primary);
+    color: white;
+    margin-top: auto;
+}
+
+footer a {
+    transition: color 0.2s, padding-left 0.2s;
+}
+
+footer a.text-white-50:hover {
+    color: #ffffff !important;
+    padding-left: 5px;
+}
+
+.hover-white:hover {
+    color: #ffffff !important;
+}
+
+/* ✅ Footer columns stack on mobile */
+@media (max-width: 576px) {
+    footer .row>[class*="col-"] {
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* ==============================
+   Utilities
+   ============================== */
+.bg-brand {
+    background-color: var(--brand-primary) !important;
+}
+
+.rounded-lg {
+    border-radius: var(--radius-lg) !important;
+}
+
+.shadow-lg-soft {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* ==============================
+   Authentication Cards
+   ============================== */
+.auth-card {
+    max-width: 450px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+/* ✅ Responsive auth card on small screens */
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 1.5rem;
+        margin: 1rem auto;
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}
