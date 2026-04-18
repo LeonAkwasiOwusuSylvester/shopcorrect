@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // Use getenv to pull secrets from Render's vault
 $host = getenv('DB_HOST');
 $db   = getenv('DB_NAME');

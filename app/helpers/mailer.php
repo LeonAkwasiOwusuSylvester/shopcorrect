@@ -201,4 +201,3 @@ function sendMail($to, $subject, $title, $message, $button = null, $otpCode = nu
         return false;
     }
 }
-?> 
