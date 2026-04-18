@@ -5,9 +5,8 @@ require_once __DIR__ . "/../app/config/db.php";
 require_once __DIR__ . "/../app/config/session.php";
 require_once __DIR__ . "/../app/helpers/mailer.php";
 
-$paystackSecretKey = "sk_test_8007cccaec38ccb4f52c2b9093621c9dff16f3f5"; 
+$paystackSecretKey = getenv('PAYSTACK_SECRET_KEY');
 
-// ================================================================
 // ✅ SMART DYNAMIC URL DETECTOR (With Central Config Fallback)
 // ================================================================
 $isSecure = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
