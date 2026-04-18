@@ -11,12 +11,15 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  */
 function sendMail($to, $subject, $title, $message, $button = null, $otpCode = null, $statusType = null)
 {
-    // 1. Read the hidden .env file sitting in the root
-    $env = parse_ini_file(__DIR__ . '/.env');
+    // 1. Assign keys directly from Render's Environment Variables (No .env file needed)
+    $smtp_user = getenv('GOOGLE_MAILER_USER') ?: 'shopcorrect.official@gmail.com';
+    $smtp_pass = getenv('GOOGLE_MAILER_PASS');
 
-    // 2. Assign keys from .env
-    $smtp_user = $env['GOOGLE_MAILER_USER'] ?? 'shopcorrect.official@gmail.com';
-    $smtp_pass = $env['GOOGLE_MAILER_PASS'];
+    // Check if password exists to avoid the 'passing null' error
+    if (!$smtp_pass) {
+        error_log("Mailer Error: GOOGLE_MAILER_PASS is not set in Render Environment Variables.");
+        return false;
+    }
 
     // --- SAFETY FIX: Prevent Button/OTP Mix-up ---
     if (!is_array($button) && empty($otpCode) && (is_numeric($button) || is_string($button))) {
@@ -25,6 +28,7 @@ function sendMail($to, $subject, $title, $message, $button = null, $otpCode = nu
     }
 
     $mail = new PHPMailer(true);
+    // ... rest of your code stays exactly the same ...
 
     try {
         // SMTP SETTINGS
@@ -197,4 +201,4 @@ function sendMail($to, $subject, $title, $message, $button = null, $otpCode = nu
         return false;
     }
 }
-?>
+?> 
