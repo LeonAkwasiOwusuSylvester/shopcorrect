@@ -3,7 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 // Since this is in the root, we only go into the vendor folder
-require_once __DIR__ . "/vendor/autoload.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 /**
  * Universal ShopCorrect Mailer
