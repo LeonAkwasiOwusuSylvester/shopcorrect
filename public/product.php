@@ -650,8 +650,8 @@ if (count($recommendations) < 4) {
                                 <span class="fw-bold text-dark"><?= htmlspecialchars($r['name']) ?></span>
                                 <small class="text-muted"><?= date('M d, Y', strtotime($r['created_at'])) ?></small>
                             </div>
-                            <div class="text-warning small mb-2">
-                                <?php for ($i=1; $i<=5; $i++) echo $i<=(int)$r['rating'] ? '<i class="bi bi-star-fill"></i> ' : '<i class="bi bi-star text-muted opacity-25"></i> '; ?>
+                            <div class="text-warning small">
+                               <?php for ($i=1; $i<=5; $i++) echo $i<=round((float)($rating['avg_rating'] ?? 0)) ? '<i class="bi bi-star-fill"></i> ' : '<i class="bi bi-star text-muted opacity-25"></i> '; ?>
                             </div>
                             <p class="text-secondary small mb-0"><?= htmlspecialchars($r['comment']) ?></p>
                         </div>
