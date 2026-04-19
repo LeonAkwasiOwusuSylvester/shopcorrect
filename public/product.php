@@ -676,7 +676,7 @@ if (count($recommendations) < 4) {
 
                     <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
                         <div class="text-warning small">
-                            <?php for ($i=1; $i<=5; $i++) echo $i<=round($rating['avg_rating']) ? '<i class="bi bi-star-fill"></i> ' : '<i class="bi bi-star text-muted opacity-25"></i> '; ?>
+                            <?php for ($i=1; $i<=5; $i++) echo $i<=round((float)($rating['avg_rating'] ?? 0)) ? '<i class="bi bi-star-fill"></i> ' : '<i class="bi bi-star text-muted opacity-25"></i> '; ?>
                         </div>
                         <span class="text-muted small fw-semibold">
                             <?= number_format((float)$rating['avg_rating'], 1) ?> (<?= $rating['total'] ?> Reviews)
