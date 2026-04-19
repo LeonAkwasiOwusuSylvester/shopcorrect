@@ -550,9 +550,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         } catch (Exception $e) {
             if ($pdo->inTransaction()) $pdo->rollBack();
-            $_SESSION['error'] = $e->getMessage();
-            header("Location: ../public/checkout.php");
-            exit;
+            // SCREAM THE ERROR TO THE SCREEN SO WE CAN SEE IT
+            die("<div style='padding: 50px; background: #fff; color: red; font-size: 20px; font-family: sans-serif;'>
+                    <strong>CHECKOUT CRASHED:</strong><br><br>" . $e->getMessage() . 
+                "</div>");
         }
     }
 }
