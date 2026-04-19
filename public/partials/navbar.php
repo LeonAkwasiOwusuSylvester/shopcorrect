@@ -14,6 +14,16 @@ $isLoggedIn = isset($userId);
 $cartCount     = 0;
 $navCategories = [];
 
+// ════ SECURITY FIX: Sanitize Search Query & Prevent Array Injection ════
+$safeSearchQuery = '';
+if (isset($_GET['q']) && is_string($_GET['q'])) {
+    // ENT_QUOTES prevents malicious code from breaking out of HTML attributes
+    $safeSearchQuery = htmlspecialchars(trim($_GET['q']), ENT_QUOTES, 'UTF-8');
+}
+
+// ════ PROMO BANNER LOGIC: Hide if user is actively searching ════
+$isSearching = ($safeSearchQuery !== '');
+
 if ($isLoggedIn) {
     try {
         $stmt = $pdo->prepare("SELECT SUM(ci.quantity) FROM cart_items ci JOIN carts c ON ci.cart_id = c.id WHERE c.user_id = ?");
@@ -125,7 +135,12 @@ $navLangLabel = $activeLabel;
 </head>
 <body>
 
-<?php require_once __DIR__ . "/promo_banner.php"; ?>
+<?php 
+// ✅ CONDITIONALLY LOAD BANNER: Only show it if the user isn't actively searching
+if (!$isSearching) {
+    require_once __DIR__ . "/promo_banner.php"; 
+}
+?>
 
 <nav class="navbar navbar-expand-lg navbar-dark marketplace-nav sticky-top flex-column shadow-sm" id="mainNavbar">
     <div class="container-fluid px-3 d-flex align-items-center w-100 position-relative">
@@ -140,7 +155,7 @@ $navLangLabel = $activeLabel;
 
         <div class="nav-search-container d-none d-lg-flex">
             <form class="nav-search-box" method="GET" action="index.php">
-                <input type="text" name="q" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" placeholder="Search products, brands and categories">
+                <input type="text" name="q" value="<?= $safeSearchQuery ?>" placeholder="Search products, brands and categories">
                 <button type="submit" title="Search">
                     <i class="bi bi-search" style="font-size: 1.1rem; font-weight: bold; color: var(--sc-navy);"></i>
                 </button>
@@ -263,7 +278,7 @@ $navLangLabel = $activeLabel;
 
     <div class="collapse w-100 d-lg-none px-3 pb-2" id="mobileSearch">
         <form class="nav-search-box mt-2" method="GET" action="index.php">
-            <input type="text" name="q" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" placeholder="Search products, brands and categories">
+            <input type="text" name="q" value="<?= $safeSearchQuery ?>" placeholder="Search products, brands and categories">
             <button type="submit" title="Search">
                 <i class="bi bi-search" style="font-size: 1.1rem; font-weight: bold; color: var(--sc-navy);"></i>
             </button>

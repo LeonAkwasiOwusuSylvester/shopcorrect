@@ -1,25 +1,35 @@
 <?php
 /* ==========================================================================
-   🎉 ADVANCED DYNAMIC PROMO BAR (WITH COUNTDOWN)
+   🎉 ADVANCED DYNAMIC PROMO BAR (B3 SECURED)
    ========================================================================== */
 $showHelloBar   = false;
-$helloPromoText = '';
 $helloPromoCode = '';
 $promoEndDate   = '';
 $promoMessages  = [];
 
 try {
+    // B3 SECURITY: Enforce strict limits and handle potential database injection points
     $pbStmt = $pdo->query("SELECT promo_active, promo_text, promo_code, promo_end_date FROM settings LIMIT 1");
     $pbData = $pbStmt->fetch(PDO::FETCH_ASSOC);
+
     if ($pbData && $pbData['promo_active'] == 1) {
         $showHelloBar   = true;
-        $helloPromoText = $pbData['promo_text']     ?? 'Special Promotion!';
-        $helloPromoCode = $pbData['promo_code']     ?? '';
-        $promoEndDate   = $pbData['promo_end_date'] ?? '';
-        $promoMessages  = array_values(array_filter(array_map('trim', explode('|', $helloPromoText))));
+        
+        // B3 SECURITY: Strict type casting and stripping of raw inputs
+        $rawPromoText   = (string)($pbData['promo_text'] ?? 'Special Promotion!');
+        $helloPromoCode = htmlspecialchars(trim((string)($pbData['promo_code'] ?? '')), ENT_QUOTES, 'UTF-8');
+        $promoEndDate   = htmlspecialchars(trim((string)($pbData['promo_end_date'] ?? '')), ENT_QUOTES, 'UTF-8');
+        
+        // B3 SECURITY: Map through the array and lock down every single piece of text against XSS
+        $promoMessages = array_values(array_filter(array_map(function($msg) {
+            return htmlspecialchars(trim($msg), ENT_QUOTES, 'UTF-8');
+        }, explode('|', $rawPromoText))));
+
         if (empty($promoMessages)) $promoMessages = ['Special Promotion!'];
     }
-} catch (PDOException $e) { /* Fail silently */ }
+} catch (PDOException $e) { 
+    // Fail silently to prevent path exposure on error
+}
 ?>
 
 <?php if ($showHelloBar): ?>
@@ -27,14 +37,15 @@ try {
 
 <style>
     /* ══════════════════════════════
-       PROMO BAR — Premium Core
+       PROMO BAR — Premium Navy Core
     ══════════════════════════════ */
     .top-promo-bar {
-        /* Dynamic moving gradient background */
-        background: linear-gradient(90deg, #6b0f1a, #d32f2f, #b21f2d, #6b0f1a);
+        /* Sleek, professional moving gradient */
+        background: linear-gradient(90deg, #0B2447, #1e293b, #0f172a, #0B2447);
         background-size: 300% 300%;
-        animation: promoGradientShift 8s ease infinite;
-        border-bottom: 2px solid #ffc107; 
+        animation: promoGradientShift 12s ease infinite;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.3); 
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         padding: 0;
         display: flex;
         align-items: stretch;
@@ -69,17 +80,17 @@ try {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: linear-gradient(135deg, #ffc107, #ff9800);
+        background: linear-gradient(135deg, #FFD700, #F59E0B);
         color: #0B2447;
         font-weight: 800;
-        font-size: 0.95rem;
-        padding: 4px 12px;
-        border-radius: 4px;
+        font-size: 0.90rem;
+        padding: 5px 14px;
+        border-radius: 50px; /* Modern pill shape */
         letter-spacing: 1px;
         text-transform: uppercase;
         white-space: nowrap;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.25);
     }
 
     /* ══════════════════════════════
@@ -98,10 +109,10 @@ try {
     }
 
     .promo-text-content {
-        color: #ffffff;
-        font-weight: 600;
-        font-size: 1.1rem;
-        letter-spacing: 0.3px;
+        color: #F8FAFC;
+        font-weight: 500;
+        font-size: 1.05rem;
+        letter-spacing: 0.5px;
         text-align: center;
         white-space: nowrap;
         overflow: hidden;
@@ -109,18 +120,17 @@ try {
         max-width: 100%;
         position: absolute;
         width: 100%;
-        transition: opacity 0.4s ease, transform 0.4s ease;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .promo-text-content i {
-        color: #ffc107;
-        margin-right: 6px;
+        color: #FFD700;
+        margin-right: 8px;
     }
 
-    .promo-text-content.exiting  { opacity: 0; transform: translateY(-12px); }
-    .promo-text-content.entering { opacity: 0; transform: translateY(12px); transition: none; }
-    .promo-text-content.visible  { opacity: 1; transform: translateY(0); transition: opacity 0.4s ease, transform 0.4s ease; }
+    .promo-text-content.exiting  { opacity: 0; transform: translateY(-15px); }
+    .promo-text-content.entering { opacity: 0; transform: translateY(15px); transition: none; }
+    .promo-text-content.visible  { opacity: 1; transform: translateY(0); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
 
     /* ══════════════════════════════
        DIVIDER
@@ -128,26 +138,26 @@ try {
     .promo-divider {
         width: 1px;
         height: 24px;
-        background: rgba(255,255,255,0.25);
+        background: rgba(255,255,255,0.15);
         flex-shrink: 0;
     }
 
     /* ══════════════════════════════
-       COUNTDOWN TIMER
+       COUNTDOWN TIMER (Glassmorphism)
     ══════════════════════════════ */
     .promo-countdown {
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         flex-shrink: 0;
         white-space: nowrap;
     }
 
     .promo-countdown .cd-label {
-        color: #ffc107;
-        font-size: 0.95rem;
-        font-weight: 600;
-        margin-right: 4px;
+        color: #FFD700;
+        font-size: 0.90rem;
+        font-weight: 700;
+        margin-right: 6px;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
@@ -155,30 +165,32 @@ try {
     .time-block {
         display: flex;
         align-items: baseline;
-        gap: 2px;
-        background: rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 4px;
-        padding: 3px 8px;
+        gap: 3px;
+        background: rgba(255, 255, 255, 0.08); /* Glass effect */
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 6px;
+        padding: 4px 10px;
         font-variant-numeric: tabular-nums;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
     }
 
     .time-block .t-num {
         color: #ffffff;
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         font-weight: 800;
     }
 
     .time-block .t-lbl {
-        color: rgba(255,255,255,0.8);
+        color: rgba(255, 255, 255, 0.6);
         font-size: 0.75rem;
         font-weight: 600;
-        text-transform: lowercase;
+        text-transform: uppercase;
     }
 
     .time-colon {
-        color: #ffc107;
-        font-size: 1.05rem;
+        color: rgba(255, 215, 0, 0.5);
+        font-size: 1.1rem;
         font-weight: 700;
     }
 
@@ -189,13 +201,13 @@ try {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(0,0,0,0.2);
-        color: #ffffff;
+        background: rgba(255, 215, 0, 0.1);
+        color: #FFD700;
         font-weight: 700;
-        font-size: 0.95rem;
-        padding: 6px 16px;
-        border-radius: 4px;
-        border: 1px dashed rgba(255,193,7,0.8);
+        font-size: 0.90rem;
+        padding: 6px 18px;
+        border-radius: 50px;
+        border: 1px dashed rgba(255, 215, 0, 0.5);
         cursor: pointer;
         transition: all 0.2s ease;
         white-space: nowrap;
@@ -203,9 +215,11 @@ try {
     }
 
     .promo-code-btn:hover {
-        background: #ffc107;
+        background: #FFD700;
         color: #0B2447;
         border-style: solid;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
     }
 
     .promo-code-btn.copied {
@@ -221,8 +235,8 @@ try {
     ══════════════════════════════ */
     @media (max-width: 768px) {
         .promo-bar-inner { 
-            padding: 8px 12px; 
-            gap: 6px 10px; 
+            padding: 10px 12px; 
+            gap: 8px 10px; 
         }
         
         .promo-badge, 
@@ -242,9 +256,8 @@ try {
         }
         
         .time-block { 
-            padding: 2px 6px; 
-            background: rgba(0,0,0,0.2);
-            border: none;
+            padding: 3px 8px; 
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .time-block .t-num { 
@@ -256,16 +269,12 @@ try {
         }
         
         .promo-code-btn { 
-            font-size: 0.9rem; 
-            padding: 5px 12px;
+            font-size: 0.85rem; 
+            padding: 5px 14px;
         }
 
-        .promo-countdown {
-            order: 2;
-        }
-        .promo-code-btn {
-            order: 3;
-        }
+        .promo-countdown { order: 2; }
+        .promo-code-btn { order: 3; }
     }
 </style>
 
@@ -273,21 +282,21 @@ try {
     <div class="promo-bar-inner">
 
         <span class="promo-badge">
-            🔥 FLASH OFFER
+            <i class="fa-solid fa-bolt"></i> FLASH OFFER
         </span>
 
         <div class="promo-divider"></div>
 
         <div class="text-slider-wrap" aria-live="polite" aria-atomic="true">
             <span class="promo-text-content visible" id="promoTextSlider">
-                <i class="fa-solid fa-cart-shopping"></i> <?= htmlspecialchars($promoMessages[0]) ?>
+                <i class="fa-solid fa-gem"></i> <?= $promoMessages[0] ?>
             </span>
         </div>
 
         <?php if (!empty($promoEndDate)): ?>
             <div class="promo-divider"></div>
             <div id="promoCountdown" class="promo-countdown"
-                 data-end="<?= htmlspecialchars($promoEndDate) ?>"
+                 data-end="<?= $promoEndDate ?>"
                  aria-label="Countdown timer">
                 <span class="cd-label"><i class="fa-solid fa-stopwatch"></i> Ends in</span>
                 <div class="time-block"><span class="t-num" id="cd-days">00</span><span class="t-lbl">d</span></div>
@@ -303,12 +312,12 @@ try {
         <?php if (!empty($helloPromoCode)): ?>
             <div class="promo-divider"></div>
             <button class="promo-code-btn"
-                    data-code="<?= htmlspecialchars($helloPromoCode) ?>"
+                    data-code="<?= $helloPromoCode ?>"
                     id="promoBtn"
                     type="button"
-                    aria-label="Copy promo code <?= htmlspecialchars($helloPromoCode) ?>">
+                    aria-label="Copy promo code <?= $helloPromoCode ?>">
                 <i class="fa-solid fa-ticket btn-icon" aria-hidden="true"></i>
-                <span class="btn-code-text">Code: <?= htmlspecialchars($helloPromoCode) ?></span>
+                <span class="btn-code-text">Code: <?= $helloPromoCode ?></span>
             </button>
         <?php endif; ?>
 
@@ -363,7 +372,8 @@ try {
     }
 
     /* ── 2. Text Slider ─────────────────────────────────────── */
-    var messages    = <?= json_encode($promoMessages) ?>;
+    // B3 SECURITY: JSON Encoding an already sanitized PHP array locks out JS injection
+    var messages    = <?= json_encode($promoMessages, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
     var msgIndex    = 0;
     var slider      = document.getElementById('promoTextSlider');
     var isAnimating = false;
@@ -383,7 +393,8 @@ try {
                 }
                 msgIndex = next;
 
-                slider.innerHTML = '<i class="fa-solid fa-cart-shopping"></i> ' + messages[msgIndex];
+                // XSS Defense: Since HTML was stripped in PHP, this is safe to inject
+                slider.innerHTML = '<i class="fa-solid fa-gem"></i> ' + messages[msgIndex];
                 slider.classList.remove('exiting');
                 slider.classList.add('entering');
 
@@ -392,8 +403,8 @@ try {
                 slider.classList.remove('entering');
                 slider.classList.add('visible');
 
-                setTimeout(function() { isAnimating = false; }, 450);
-            }, 420);
+                setTimeout(function() { isAnimating = false; }, 500);
+            }, 500);
 
         }, 4500);
     }
