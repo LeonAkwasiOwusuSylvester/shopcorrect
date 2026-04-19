@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql mysqli zip gd
 
-# 2. Enable Apache mod_rewrite (Crucial for your .htaccess to work!)
+# 2. Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
 # 3. Allow .htaccess to override Apache settings
@@ -18,10 +18,13 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # 5. Copy everything to the standard root
 COPY . /var/www/html/
 
-# 6. Install dependencies
+# 6. THE FIX: Nuke the Windows vendor folder and lock file so Composer starts completely fresh!
+RUN rm -rf vendor composer.lock
+
+# 7. Install dependencies
 RUN if [ -f "composer.json" ]; then \
     composer install --no-dev --optimize-autoloader --ignore-platform-reqs; \
     fi
 
-# 7. Permissions
+# 8. Permissions
 RUN chown -R www-data:www-data /var/www/html/
